@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+# Test Databases
+test_db.sqlite
+
+# NPM lockfile
+package-lock.json

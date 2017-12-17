@@ -1,0 +1,35 @@
+{
+  "name": "generic-repo",
+  "version": "0.1.0",
+  "description": "Generic repository for objects Edit",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicholaswmin/generic-repo.git"
+  },
+  "keywords": [
+    "repository",
+    "persistence",
+    "db",
+    "domain-driven-design"
+  ],
+  "author": "@nicholaswmin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nicholaswmin/generic-repo/issues"
+  },
+  "homepage": "https://github.com/nicholaswmin/generic-repo#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "knex": "^0.14.2",
+    "mocha": "^4.0.1",
+    "sqlite3": "^3.1.13"
+  },
+  "dependencies": {}
+}
