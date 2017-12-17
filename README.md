@@ -31,7 +31,7 @@ const knex = require('knex')({
 
 class User {
   constructor({ id_user, name }) {
-    // All subproperties of `props` will be persisteds
+    // All subproperties of `props` will be persisted
     this.props = { id_user, name }
 
     // Everything else will not be persisted
