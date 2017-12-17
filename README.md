@@ -49,7 +49,7 @@ const genericRepo = new GenericRepo({
   Class: User
 })
 
-genericRepo.upsert(knex,  new User({ id_user: 'lxkkf', name: 'John Doe' }))
+genericRepo.upsert(knex, new User({ id_user: 'lxkkf', name: 'John Doe' }))
   .then(() => {
     return genericRepo.get(knex, { id_user: 'lxkkf' })
   })
