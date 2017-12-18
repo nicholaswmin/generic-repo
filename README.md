@@ -65,7 +65,7 @@ matching the properties in the `props` property of your instance.
 
 ### `upsert(knex, instance)`
 
-- Inserts the object if it does not exist by primary key.
+- Inserts the instance if it does not exist by primary key.
 - Updates the instance if it already exists by primary key.
 
 ```javascript
