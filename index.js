@@ -19,7 +19,7 @@ class GenericRepo {
     }
   }
 
-  delete(db, filter) {
+  del(db, filter) {
     return db.table(this.tableName).where(filter).del()
   }
 

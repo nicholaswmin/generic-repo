@@ -87,7 +87,7 @@ genericRepo.getAll(knex, { name: 'John Doe' }).then(users => {
 
 ### `get(knex, filter)`
 
-- Returns an instance that matches the filter
+- Returns an instance that matches the filter.
 - Returns `undefined` if no instance is found.
 
 ```javascript
@@ -96,13 +96,13 @@ genericRepo.getAll(knex, { name: 'John Doe' }).then(user => {
 })
 ```
 
-### `delete(knex, filter)`
+### `del(knex, filter)`
 
-- Removes the instance that matches the filter
+- Removes/Deletes the instance that matches the filter.
 - Does nothing if no instance is found (no-op).
 
 ```javascript
-genericRepo.delete(knex, { name: 'John Doe' }).then(() => {
+genericRepo.del(knex, { name: 'John Doe' }).then(() => {
   // Instance with name 'John Doe' was removed from the DB
 })
 ```

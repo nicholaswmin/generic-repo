@@ -106,7 +106,7 @@ describe('#get()', () => {
   })
 })
 
-describe('#delete()', () => {
+describe('#del()', () => {
   let users
 
   beforeEach(() => {
@@ -122,7 +122,7 @@ describe('#delete()', () => {
   })
 
   it('removes the instance that matches the filter', () => {
-    return genericRepo.delete(knex, { id_user: 'kkowlk' })
+    return genericRepo.del(knex, { id_user: 'kkowlk' })
       .then(() => {
         return genericRepo.getAll(knex).then(users => {
           users.should.have.length(1)
