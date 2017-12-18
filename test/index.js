@@ -105,3 +105,28 @@ describe('#get()', () => {
     })
   })
 })
+
+describe('#delete()', () => {
+  let users
+
+  beforeEach(() => {
+    return genericRepo.upsert(
+      knex,
+      new User({ id_user: 'rrvkkw', first_name:'John', last_name: 'Doe' })
+    ).then(() => {
+      return genericRepo.upsert(
+        knex,
+        new User({ id_user: 'kkowlk', first_name:'Mary', last_name: 'Jane' })
+      )
+    })
+  })
+
+  it('removes the instance that matches the filter', () => {
+    return genericRepo.delete(knex, { id_user: 'kkowlk' })
+      .then(() => {
+        return genericRepo.getAll(knex).then(users => {
+          users.should.have.length(1)
+        })
+      })
+  })
+})

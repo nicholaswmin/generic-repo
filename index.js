@@ -19,7 +19,11 @@ class GenericRepo {
     }
   }
 
-  async getAll(db, filter) {
+  delete(db, filter) {
+    return db.table(this.tableName).where(filter).del()
+  }
+
+  getAll(db, filter) {
     return db.table(this.tableName)
       .modify(q => {
         if (filter) q.where(filter)
@@ -27,7 +31,7 @@ class GenericRepo {
       .map(data => new this.Class(data))
   }
 
-  async get(db, filter) {
+  get(db, filter) {
     return db.table(this.tableName)
       .first()
       .where(filter)

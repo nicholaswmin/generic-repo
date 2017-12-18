@@ -96,6 +96,17 @@ genericRepo.getAll(knex, { name: 'John Doe' }).then(user => {
 })
 ```
 
+### `delete(knex, filter)`
+
+- Removes the instance that matches the filter
+- Does nothing if no instance is found (no-op).
+
+```javascript
+genericRepo.delete(knex, { name: 'John Doe' }).then(() => {
+  // Instance with name 'John Doe' was removed from the DB
+})
+```
+
 ## Extend this repository
 
 This module exports an ES6 `Class` which you can simply `extend`.
