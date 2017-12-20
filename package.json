@@ -1,6 +1,6 @@
 {
   "name": "generic-repo",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Generic repository for objects Edit",
   "main": "index.js",
   "directories": {
