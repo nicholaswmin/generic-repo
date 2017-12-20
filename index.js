@@ -61,45 +61,8 @@ class GenericRepo {
     // @HACK
     // To ensure we *only* persist properties of this Class and not properties
     // of subclasses (classes that inherit from this one), we instantiate
-    // a new temp Class and use the instance to infer the props.
-    //
-    // This will fail if the Class is instantiated in any other way other than
-    // than a `props` destructured argument the constructor, for example using
-    // multiple arguments.
-    //
-    // ## Examples:
-    //
-    // ### Working examples:
-    //
-    // Class Point {
-    //    constructor({ props }) {
-    //      this.props = { props.x, props.y }
-    //    }
-    // }
-    //
-    // Class Point {
-    //    constructor({ props, foo, bar }) {
-    //      this.props = { props.x, props.y }
-    //
-    //      this.foo = foo
-    //      this.bar = bar
-    //    }
-    // }
-    //
-    // ### Failing examples:
-    //
-    // Class Point {
-    //    constructor(x, y) {
-    //      this.props = { x, y }
-    //    }
-    // }
-    //
-    // Class Point {
-    //    constructor({ data }) {
-    //      this.props = { data.x, data.y }
-    //    }
-    // }
-    //
+    // a new declared temp. Class with the passed instance props and use the
+    // temp instance to infer the props.
     const tempClass = new this.Class(instance.props)
 
     return Object.keys(tempClass.props).reduce((obj, key) => {
