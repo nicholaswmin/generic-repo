@@ -1,11 +1,11 @@
 'use strict'
 
 class User {
-  constructor({ id_user, first_name, last_name }) {
+  constructor(data) {
     this.props = {
-      id_user,
-      first_name,
-      last_name
+      id_user: data.id_user,
+      first_name: data.first_name,
+      last_name: data.last_name
     }
   }
 

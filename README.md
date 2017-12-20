@@ -11,16 +11,35 @@ $ npm i --save generic-repo
 
 ## Usage
 
-Instantiate a `GenericRepo` with:
+### A persistable Class
 
-- The `tableName`, the DB table where instances will be mapped.
-- The `primaryKey`, a unique id property for each instance, included
-  in a `props` property of the instance.
-- The `Class`, the instance Class with the persistable properties
-  included in a `props` property.
+A Class can be persisted if it satisfies the following criteria:
 
+- 1st argument of it's constructor accepts an `Object` that contains
+  at least all the persistable properties.
+- It has a `props` property that contains all the props that should be
+  persisted.
 
-Here's an example:
+```javascript
+class User {
+  constructor(data) {
+    this.props = {  
+      id_user: data.id_user,
+      name: data.name
+    }
+
+    // Anything outside `props` will *not* be persisted
+    // - e.g `age` property will not be persisted
+    this.age = 15
+  }
+
+  getName() {
+    return this.name
+  }
+}
+```
+
+A usage example using the above `User` Class:
 
 ```javascript
 const GenericRepo = require('generic-repo')
@@ -29,37 +48,26 @@ const knex = require('knex')({
   connection: { filename: './test_db.sqlite' }
 })
 
-class User {
-  constructor({ id_user, name }) {
-    // All subproperties of `props` will be persisted
-    this.props = { id_user, name }
-
-    // Everything else will not be persisted
-    this.age = 15
-  }
-
-  getName() {
-    return this.name
-  }
-}
-
 const genericRepo = new GenericRepo({
   tableName: 'user',
   primaryKey: 'id_user',
   Class: User
 })
 
-genericRepo.upsert(knex, new User({ id_user: 'lxkkf', name: 'John Doe' }))
+genericRepo.upsert(knex, new User({
+    id_user: 'lxkkfv',
+    name: 'John Doe'
+  }))
   .then(() => {
-    return genericRepo.get(knex, { id_user: 'lxkkf' })
+    return genericRepo.get(knex, { id_user: 'lxkkfv' })
   })
   .then(user => {
     console.log(user.getName()) // 'John Doe'
   })
 ```
 
-**Important:** Ensure that your DB already has a table name `user` with columns
-matching the properties in the `props` property of your instance.
+Ensure that your DB already has the table/columns you declared when
+you instantiated the repo.
 
 ## API
 
@@ -128,7 +136,7 @@ class MySuperWowRepo extends GenericRepo {
 
 ## Test
 
-```bash
+```
 $ npm test
 ```
 

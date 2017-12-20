@@ -42,7 +42,7 @@ class GenericRepo {
     return db(this.tableName)
       .insert(Object.assign(
         { },
-        instance.props,
+        this._getPersistableTuple(instance),
         {
           [this.primaryKey]: instance.props[this.primaryKey]
         }
@@ -51,10 +51,64 @@ class GenericRepo {
 
   _update(db, instance) {
     return db(this.tableName)
-      .update(instance.props)
+      .update(this._getPersistableTuple(instance, { ignorePrimaryKey: true }))
       .where({
         [this.primaryKey]: instance.props[this.primaryKey]
       })
+  }
+
+  _getPersistableTuple(instance, { ignorePrimaryKey = false } = {}) {
+    // @HACK
+    // To ensure we *only* persist properties of this Class and not properties
+    // of subclasses (classes that inherit from this one), we instantiate
+    // a new temp Class and use the instance to infer the props.
+    //
+    // This will fail if the Class is instantiated in any other way other than
+    // than a `props` destructured argument the constructor, for example using
+    // multiple arguments.
+    //
+    // ## Examples:
+    //
+    // ### Working examples:
+    //
+    // Class Point {
+    //    constructor({ props }) {
+    //      this.props = { props.x, props.y }
+    //    }
+    // }
+    //
+    // Class Point {
+    //    constructor({ props, foo, bar }) {
+    //      this.props = { props.x, props.y }
+    //
+    //      this.foo = foo
+    //      this.bar = bar
+    //    }
+    // }
+    //
+    // ### Failing examples:
+    //
+    // Class Point {
+    //    constructor(x, y) {
+    //      this.props = { x, y }
+    //    }
+    // }
+    //
+    // Class Point {
+    //    constructor({ data }) {
+    //      this.props = { data.x, data.y }
+    //    }
+    // }
+    //
+    const tempClass = new this.Class(instance.props)
+
+    return Object.keys(tempClass.props).reduce((obj, key) => {
+      if (ignorePrimaryKey && key === this.primaryKey) return obj
+
+      return Object.assign(obj, {
+        [key]: tempClass.props[key]
+      })
+    }, {})
   }
 }
 
