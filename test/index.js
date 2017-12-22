@@ -96,6 +96,26 @@ describe('Passed instance is same type as declared Class', () => {
     })
   })
 
+  describe('#exists()', () => {
+    beforeEach(() => {
+      return genericRepo.upsert(knex, testUsers.johnDoe).then(() => {
+        return genericRepo.upsert(knex, testUsers.maryJane)
+      })
+    })
+
+    it('returns false if no result is found', () => {
+      return genericRepo.exists(knex, { id_user: 'kkaiiw' }).then(result => {
+        result.should.equal(false)
+      })
+    })
+
+    it('returns true if a result is found', () => {
+      return genericRepo.exists(knex, { id_user: 'rrvkkw' }).then(result => {
+        result.should.equal(true)
+      })
+    })
+  })
+
   describe('#del()', () => {
     let users
 

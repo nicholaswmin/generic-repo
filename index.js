@@ -31,6 +31,13 @@ class GenericRepo {
       .map(data => new this.Class(data))
   }
 
+  exists(db, filter) {
+    return db.table(this.tableName)
+      .first()
+      .where(filter)
+      .then(result => !!result)
+  }
+
   get(db, filter) {
     return db.table(this.tableName)
       .first()

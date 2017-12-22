@@ -104,6 +104,16 @@ genericRepo.getAll(knex, { name: 'John Doe' }).then(user => {
 })
 ```
 
+### `exists(knex, filter)`
+
+- Returns `true` if a result is found, `false` otherwise.
+
+```javascript
+genericRepo.exists(knex, { name: 'John Doe' }).then(result => {
+  console.log(result) // logs `true`
+})
+```
+
 ### `del(knex, filter)`
 
 - Removes/Deletes the instance that matches the filter.
