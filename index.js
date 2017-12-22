@@ -33,7 +33,7 @@ class GenericRepo {
 
   exists(db, filter) {
     return db.table(this.tableName)
-      .first()
+      .first(this.primaryKey)
       .where(filter)
       .then(result => !!result)
   }
