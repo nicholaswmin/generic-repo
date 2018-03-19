@@ -51,7 +51,7 @@ const knex = require('knex')({
 const genericRepo = new GenericRepo({
   tableName: 'user',
   primaryKey: 'id_user',
-  Class: User
+  constructAs: data => new User(data)
 })
 
 genericRepo.upsert(knex, new User({
@@ -133,8 +133,12 @@ This module exports an ES6 `Class` which you can simply `extend`.
 const GenericRepo = require('generic-repo')
 
 class MySuperWowRepo extends GenericRepo {
-  constructor({ tableName, primaryKey, Class }) {
-    super({ tableName, primaryKey, Class })
+  constructor() {
+    super({
+      tableName: 'employees',
+      primaryKey: 'id_employee',
+      constructAs: data => new Employee(data)
+    })
   }
 
   getAllJohnDoes(knex) {
