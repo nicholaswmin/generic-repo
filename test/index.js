@@ -14,7 +14,7 @@ const testUsers = {
 const genericRepo = new GenericRepo({
   tableName: 'user',
   primaryKey: 'id_user',
-  Class: User
+  constructAs:  data => new User(data)
 })
 
 beforeEach(() => {
@@ -132,34 +132,6 @@ describe('Passed instance is same type as declared Class', () => {
             users.should.have.length(1)
           })
         })
-    })
-  })
-})
-
-describe('Passed instance is a sub-Class of declared Class', () => {
-  class Person extends User {
-    constructor(data) {
-      super(data)
-
-      this.props = Object.assign(this.props, {
-        social_security_no: data.social_security_no
-      })
-    }
-  }
-
-  const personJohnDoe = new Person({
-    id_user: 'rokkal',
-    first_name: 'John',
-    last_name: 'Doe',
-    social_security_no: '111-222-333'
-  })
-
-  it('only persists props of declared Class (ignores sub-class props)', () => {
-    return genericRepo.upsert(knex, personJohnDoe).then(result => {
-      return genericRepo.get(knex, { id_user: 'rokkal'})
-    }).then(result => {
-      result.should.be.a.userInstance
-      result.should.not.have.key('social_security_no')
     })
   })
 })

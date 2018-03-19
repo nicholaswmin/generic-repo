@@ -1,10 +1,10 @@
 'use strict'
 
 class GenericRepo {
-  constructor({ tableName, primaryKey, Class }) {
+  constructor({ tableName, primaryKey, constructAs }) {
     this.tableName = tableName
     this.primaryKey = primaryKey
-    this.Class = Class
+    this.constructAs = constructAs
   }
 
   async upsert(db, instance) {
@@ -28,7 +28,7 @@ class GenericRepo {
       .modify(q => {
         if (filter) q.where(filter)
       })
-      .map(data => new this.Class(data))
+      .map(data => this.constructAs(data))
   }
 
   exists(db, filter) {
@@ -42,7 +42,7 @@ class GenericRepo {
     return db.table(this.tableName)
       .first()
       .where(filter)
-      .then(data => data ? new this.Class(data) : undefined)
+      .then(data => data ? this.constructAs(data) : undefined)
   }
 
   _insert(db, instance) {
@@ -65,18 +65,11 @@ class GenericRepo {
   }
 
   _getPersistableTuple(instance, { ignorePrimaryKey = false } = {}) {
-    // @HACK
-    // To ensure we *only* persist properties of this Class and not properties
-    // of subclasses (classes that inherit from this one), we instantiate
-    // a new declared temp. Class with the passed instance props and use the
-    // temp instance to infer the props.
-    const tempClass = new this.Class(instance.props)
-
-    return Object.keys(tempClass.props).reduce((obj, key) => {
+    return Object.keys(instance.props).reduce((obj, key) => {
       if (ignorePrimaryKey && key === this.primaryKey) return obj
 
       return Object.assign(obj, {
-        [key]: tempClass.props[key]
+        [key]: instance.props[key]
       })
     }, {})
   }
