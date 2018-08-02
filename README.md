@@ -20,12 +20,33 @@ A Class can be persisted if it satisfies the following criteria:
 - It has a `props` property that contains all the props that should be
   persisted.
 
+### Property serialisation
+
+#### Complex property values
+
+If a prop is of type `Object` it will be converted into a JSON before inserting
+into the database. You should handle this case appropriately in your Class
+constructor (see `children` prop of `User` below).
+
+#### Non-complex prop values
+
+Non-complex values such as `Number`, `String`, `Boolean` are send to the
+database as-is.
+
+
 ```javascript
 class User {
   constructor(data) {
     this.props = {  
       id_user: data.id_user,
-      name: data.name
+      name: data.name,
+      // Some DB's might not support a JSON datatype.
+      // Therefore we might also need to *parse* back the result.
+      children: data.children
+        ? typeof data.children === 'string'
+          ? JSON.parse(data.children)
+          : data.children
+        : []
     }
 
     // Anything outside `props` will *not* be persisted

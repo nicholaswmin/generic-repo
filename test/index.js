@@ -4,10 +4,16 @@ const { GenericRepo, User, knex, dbSetup } = require('./bootstrap.js')
 
 const testUsers = {
   johnDoe: new User({
-    id_user: 'ghkkxl', first_name:'John', last_name: 'Doe'
+    id_user: 'ghkkxl',
+    first_name:'John',
+    last_name: 'Doe',
+    children: ['foo', 'bar']
   }),
   maryJane: new User({
-    id_user: 'rrvkkw', first_name:'Mary', last_name: 'Jane'
+    id_user: 'rrvkkw',
+    first_name:'Mary',
+    last_name: 'Jane',
+    children: ['foo', 'bar']
   })
 }
 
@@ -42,6 +48,15 @@ describe('Passed instance is same type as declared Class', () => {
         result[0].should.be.a.userInstance
         result[0].getId().should.equal('rrvkkw')
         result[0].getName().should.equal('Mary Jane')
+      })
+    })
+
+    it(`handles prop which is typeof === 'object'`, () => {
+      return genericRepo.upsert(knex, testUsers.maryJane).then(result => {
+        return genericRepo.getAll(knex)
+      }).then(result => {
+        result.should.have.length(1)
+        result[0].getChildren().should.deep.equal(['foo', 'bar'])
       })
     })
   })

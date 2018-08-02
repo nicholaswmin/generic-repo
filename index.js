@@ -69,7 +69,9 @@ class GenericRepo {
       if (ignorePrimaryKey && key === this.primaryKey) return obj
 
       return Object.assign(obj, {
-        [key]: instance.props[key]
+        [key]: typeof instance.props[key] === 'object'
+          ? JSON.stringify(instance.props[key])
+          : instance.props[key]
       })
     }, {})
   }
