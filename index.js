@@ -28,7 +28,7 @@ class GenericRepo {
       .modify(q => {
         if (filter) q.where(filter)
       })
-      .map(data => this.constructAs(data))
+      .then(data => data.map(data => this.constructAs(data)))
   }
 
   exists(db, filter) {
