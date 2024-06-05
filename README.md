@@ -1,7 +1,7 @@
 # generic-repo
 Generic [Repository][repository] for objects, based on [knex][knex].
 
-[![Build Status](https://travis-ci.org/nicholaswmin/generic-repo.svg?branch=master)](https://travis-ci.org/nicholaswmin/generic-repo)
+[![test-workflow][test-workflow-badge]][ci-test]
 
 ## Install
 
@@ -186,3 +186,4 @@ MIT
 [repository]: https://msdn.microsoft.com/en-us/library/ff649690.aspx
 [knex]: http://knexjs.org/
 [nicholaswmin-github]: https://github.com/nicholaswmin
+[ci-test]: https://github.com/nicholaswmin/generic-repo/actions/workflows/tests.yml
