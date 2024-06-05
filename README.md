@@ -1,7 +1,9 @@
+[![test-workflow][test-workflow-badge]][ci-test]
+
 # generic-repo
+
 Generic [Repository][repository] for objects, based on [knex][knex].
 
-[![test-workflow][test-workflow-badge]][ci-test]
 
 ## Install
 
