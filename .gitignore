@@ -59,6 +59,3 @@ typings/
 
 # Test Databases
 test_db.sqlite
-
-# NPM lockfile
-package-lock.json
