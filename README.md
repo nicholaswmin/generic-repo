@@ -185,8 +185,8 @@ $ npm test
 
 MIT
 
-[test-workflow-badge]: https://github.com/nicholaswmin/generic-repo/actions/workflows/tests.yml/badge.svg
-[ci-test]: https://github.com/nicholaswmin/generic-repo/actions/workflows/tests.yml
+[test-workflow-badge]: https://github.com/nicholaswmin/generic-repo/actions/workflows/test.yml/badge.svg
+[ci-test]: https://github.com/nicholaswmin/generic-repo/actions/workflows/test.yml
 
 [repository]: https://msdn.microsoft.com/en-us/library/ff649690.aspx
 [knex]: http://knexjs.org/
