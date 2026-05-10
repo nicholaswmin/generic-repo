@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node-version: [9.x]
+        node-version: [lts/*]
     env:
       ENV_CI: 1
     steps:
@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
+    - run: npm ci
     - run: npm test
       env:
         NODE_ENV: test
