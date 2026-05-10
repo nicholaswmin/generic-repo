@@ -120,8 +120,8 @@ Tests must pass before submitting a PR.
 
 ## Publishing
 
-Publishing is automated on merge to master when `package.json`
-changes.
+Publishing is automated from `.github/workflows/tests.yml` after tests pass
+on pushes to master when the current package version is not already published.
 
 ### Version Bumping
 
@@ -136,8 +136,8 @@ Update version in `package.json` following semver:
 The publish workflow automatically:
 
 1. Runs tests
-2. Publishes to npm with provenance
-3. Uses `NPM_TOKEN` from `release` environment
+2. Authenticates to npm with OIDC trusted publishing
+3. Publishes to npm with provenance
 
 No manual publishing needed.
 
