@@ -1,18 +1,21 @@
 'use strict'
 
+const test = require('node:test')
 const { GenericRepo, User, knex, dbSetup } = require('./bootstrap.js')
 
 const testUsers = {
   johnDoe: new User({
     id_user: 'ghkkxl',
-    first_name:'John',
+    first_name: 'John',
     last_name: 'Doe',
+    nickname: null,
     children: ['foo', 'bar']
   }),
   maryJane: new User({
     id_user: 'rrvkkw',
-    first_name:'Mary',
+    first_name: 'Mary',
     last_name: 'Jane',
+    nickname: 'MJ',
     children: ['foo', 'bar']
   })
 }
@@ -20,133 +23,136 @@ const testUsers = {
 const genericRepo = new GenericRepo({
   tableName: 'user',
   primaryKey: 'id_user',
-  constructAs:  data => new User(data)
+  constructAs: data => new User(data)
 })
 
-beforeEach(() => {
-  return dbSetup.setup(knex)
-})
+test('GenericRepo with User instances', async (t) => {
+  t.beforeEach(() => dbSetup.setup(knex))
+  t.after(() => knex.destroy())
 
-describe('Passed instance is same type as declared Class', () => {
-  describe('#upsert()', () => {
-    it('inserts a new instance if it does not exists by primary Key', () => {
-      return genericRepo.upsert(knex, testUsers.johnDoe).then(result => {
-        return genericRepo.getAll(knex)
-      }).then(result => {
-        result.should.have.length(1)
-        result[0].should.be.a.userInstance
-        result[0].getId().should.equal('ghkkxl')
-        result[0].getName().should.equal('John Doe')
-      })
+  await t.test('upsert()', async (t) => {
+    await t.test('inserts a new instance if it does not exist by primary key', async (t) => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      const result = await genericRepo.getAll(knex)
+
+      t.assert.strictEqual(result.length, 1)
+      t.assert.ok(result[0].props)
+      t.assert.strictEqual(typeof result[0].props, 'object')
+      t.assert.strictEqual(typeof result[0].props.id_user, 'string')
+      t.assert.strictEqual(typeof result[0].props.first_name, 'string')
+      t.assert.strictEqual(typeof result[0].props.last_name, 'string')
+      t.assert.strictEqual(result[0].getId(), 'ghkkxl')
+      t.assert.strictEqual(result[0].getName(), 'John Doe')
     })
 
-    it('updates the instance if it exists by primary Key', () => {
-      return genericRepo.upsert(knex, testUsers.maryJane).then(result => {
-        return genericRepo.getAll(knex)
-      }).then(result => {
-        result.should.have.length(1)
-        result[0].should.be.a.userInstance
-        result[0].getId().should.equal('rrvkkw')
-        result[0].getName().should.equal('Mary Jane')
-      })
+    await t.test('updates the instance if it exists by primary key', async (t) => {
+      await genericRepo.upsert(knex, testUsers.maryJane)
+      const result = await genericRepo.getAll(knex)
+
+      t.assert.strictEqual(result.length, 1)
+      t.assert.ok(result[0].props)
+      t.assert.strictEqual(result[0].getId(), 'rrvkkw')
+      t.assert.strictEqual(result[0].getName(), 'Mary Jane')
     })
 
-    it(`handles prop which is typeof === 'object'`, () => {
-      return genericRepo.upsert(knex, testUsers.maryJane).then(result => {
-        return genericRepo.getAll(knex)
-      }).then(result => {
-        result.should.have.length(1)
-        result[0].getChildren().should.deep.equal(['foo', 'bar'])
-      })
-    })
-  })
+    await t.test('handles prop which is typeof === object', async (t) => {
+      await genericRepo.upsert(knex, testUsers.maryJane)
+      const result = await genericRepo.getAll(knex)
 
-  describe('#getAll()', () => {
-    let users
-
-    beforeEach(() => {
-      return genericRepo.upsert(knex, testUsers.johnDoe).then(() => {
-        return genericRepo.upsert(knex, testUsers.maryJane)
-      })
+      t.assert.strictEqual(result.length, 1)
+      t.assert.deepStrictEqual(result[0].getChildren(), ['foo', 'bar'])
     })
 
-    it('returns all instances if not provided with a filter', () => {
-      return genericRepo.getAll(knex).then(users => {
-        users.should.have.length(2)
-        users.forEach(user => {
-          user.should.be.a.userInstance
-        })
-      })
+    await t.test('preserves null prop values', async (t) => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      const user = await genericRepo.get(knex, { id_user: 'ghkkxl' })
+
+      t.assert.strictEqual(user.getNickname(), null)
     })
 
-    it('returns only instances that match the filter', () => {
-      return genericRepo.getAll(knex, { id_user: 'rrvkkw' }).then(users => {
-        users.should.have.length(1)
-        users[0].should.be.a.userInstance
-        users[0].props.id_user.should.equal('rrvkkw')
-      })
+    await t.test('preserves non-null prop values', async (t) => {
+      await genericRepo.upsert(knex, testUsers.maryJane)
+      const user = await genericRepo.get(knex, { id_user: 'rrvkkw' })
+
+      t.assert.strictEqual(user.getNickname(), 'MJ')
     })
   })
 
-  describe('#get()', () => {
-    let users
+  await t.test('getAll()', async (t) => {
+    t.beforeEach(async () => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      await genericRepo.upsert(knex, testUsers.maryJane)
+    })
 
-    beforeEach(() => {
-      return genericRepo.upsert(knex, testUsers.johnDoe).then(() => {
-        return genericRepo.upsert(knex, testUsers.maryJane)
+    await t.test('returns all instances if not provided with a filter', async (t) => {
+      const users = await genericRepo.getAll(knex)
+
+      t.assert.strictEqual(users.length, 2)
+      users.forEach(user => {
+        t.assert.ok(user.props)
+        t.assert.strictEqual(typeof user.props.id_user, 'string')
       })
     })
 
-    it('returns undefined if no results are found', () => {
-      return genericRepo.get(knex, { id_user: 'kkaiiw' }).then(user => {
-        (typeof user).should.be.equal('undefined')
-      })
-    })
+    await t.test('returns only instances that match the filter', async (t) => {
+      const users = await genericRepo.getAll(knex, { id_user: 'rrvkkw' })
 
-    it('returns the instance that matches the filter', () => {
-      return genericRepo.get(knex, { id_user: 'rrvkkw' }).then(user => {
-        user.should.be.a.userInstance
-        user.props.id_user.should.equal('rrvkkw')
-      })
-    })
-  })
-
-  describe('#exists()', () => {
-    beforeEach(() => {
-      return genericRepo.upsert(knex, testUsers.johnDoe).then(() => {
-        return genericRepo.upsert(knex, testUsers.maryJane)
-      })
-    })
-
-    it('returns false if no result is found', () => {
-      return genericRepo.exists(knex, { id_user: 'kkaiiw' }).then(result => {
-        result.should.equal(false)
-      })
-    })
-
-    it('returns true if a result is found', () => {
-      return genericRepo.exists(knex, { id_user: 'rrvkkw' }).then(result => {
-        result.should.equal(true)
-      })
+      t.assert.strictEqual(users.length, 1)
+      t.assert.ok(users[0].props)
+      t.assert.strictEqual(users[0].props.id_user, 'rrvkkw')
     })
   })
 
-  describe('#del()', () => {
-    let users
-
-    beforeEach(() => {
-      return genericRepo.upsert(knex, testUsers.johnDoe).then(() => {
-        return genericRepo.upsert(knex, testUsers.maryJane)
-      })
+  await t.test('get()', async (t) => {
+    t.beforeEach(async () => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      await genericRepo.upsert(knex, testUsers.maryJane)
     })
 
-    it('removes the instance that matches the filter', () => {
-      return genericRepo.del(knex, { id_user: 'rrvkkw' })
-        .then(() => {
-          return genericRepo.getAll(knex).then(users => {
-            users.should.have.length(1)
-          })
-        })
+    await t.test('returns undefined if no results are found', async (t) => {
+      const user = await genericRepo.get(knex, { id_user: 'kkaiiw' })
+
+      t.assert.strictEqual(typeof user, 'undefined')
+    })
+
+    await t.test('returns the instance that matches the filter', async (t) => {
+      const user = await genericRepo.get(knex, { id_user: 'rrvkkw' })
+
+      t.assert.ok(user.props)
+      t.assert.strictEqual(user.props.id_user, 'rrvkkw')
+    })
+  })
+
+  await t.test('exists()', async (t) => {
+    t.beforeEach(async () => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      await genericRepo.upsert(knex, testUsers.maryJane)
+    })
+
+    await t.test('returns false if no result is found', async (t) => {
+      const result = await genericRepo.exists(knex, { id_user: 'kkaiiw' })
+
+      t.assert.strictEqual(result, false)
+    })
+
+    await t.test('returns true if a result is found', async (t) => {
+      const result = await genericRepo.exists(knex, { id_user: 'rrvkkw' })
+
+      t.assert.strictEqual(result, true)
+    })
+  })
+
+  await t.test('del()', async (t) => {
+    t.beforeEach(async () => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      await genericRepo.upsert(knex, testUsers.maryJane)
+    })
+
+    await t.test('removes the instance that matches the filter', async (t) => {
+      await genericRepo.del(knex, { id_user: 'rrvkkw' })
+      const users = await genericRepo.getAll(knex)
+
+      t.assert.strictEqual(users.length, 1)
     })
   })
 })
