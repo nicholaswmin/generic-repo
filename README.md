@@ -122,8 +122,8 @@ genericRepo.getAll(knex, { name: 'John Doe' }).then(users => {
 - Returns `undefined` if no instance is found.
 
 ```javascript
-genericRepo.getAll(knex, { name: 'John Doe' }).then(user => {
-  console.log(result) // logs the 'John Doe' instance
+genericRepo.get(knex, { name: 'John Doe' }).then(user => {
+  console.log(user) // logs the 'John Doe' instance
 })
 ```
 
