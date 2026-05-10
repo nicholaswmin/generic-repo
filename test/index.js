@@ -8,12 +8,14 @@ const testUsers = {
     id_user: 'ghkkxl',
     first_name: 'John',
     last_name: 'Doe',
+    nickname: null,
     children: ['foo', 'bar']
   }),
   maryJane: new User({
     id_user: 'rrvkkw',
     first_name: 'Mary',
     last_name: 'Jane',
+    nickname: 'MJ',
     children: ['foo', 'bar']
   })
 }
@@ -59,6 +61,13 @@ test('GenericRepo with User instances', async (t) => {
 
       t.assert.strictEqual(result.length, 1)
       t.assert.deepStrictEqual(result[0].getChildren(), ['foo', 'bar'])
+    })
+
+    await t.test('preserves null prop values', async (t) => {
+      await genericRepo.upsert(knex, testUsers.johnDoe)
+      const user = await genericRepo.get(knex, { id_user: 'ghkkxl' })
+
+      t.assert.strictEqual(user.getNickname(), null)
     })
   })
 

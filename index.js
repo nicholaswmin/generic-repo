@@ -59,7 +59,8 @@ class GenericRepo {
         ? obj
         : {
             ...obj,
-            [key]: typeof instance.props[key] === 'object'
+            [key]: instance.props[key] !== null &&
+              typeof instance.props[key] === 'object'
               ? JSON.stringify(instance.props[key])
               : instance.props[key]
           }

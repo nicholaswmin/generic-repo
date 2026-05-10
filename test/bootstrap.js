@@ -9,5 +9,5 @@ module.exports = {
   db,
   dbSetup,
   User,
-  knex: db.createTestDb()
+  knex: db.createInMemoryDb()
 }

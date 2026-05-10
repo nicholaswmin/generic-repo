@@ -17,7 +17,7 @@ $ npm i --save generic-repo
 
 A Class can be persisted if it satisfies the following criteria:
 
-- 1st argument of it's constructor accepts an `Object` that contains
+- 1st argument of its constructor accepts an `Object` that contains
   at least all the persistable properties.
 - It has a `props` property that contains all the props that should be
   persisted.
@@ -32,14 +32,14 @@ constructor (see `children` prop of `User` below).
 
 #### Non-complex prop values
 
-Non-complex values such as `Number`, `String`, `Boolean` are send to the
+Non-complex values such as `Number`, `String`, `Boolean`, `null` are sent to the
 database as-is.
 
 
 ```javascript
 class User {
   constructor(data) {
-    this.props = {  
+    this.props = {
       id_user: data.id_user,
       name: data.name,
       // Some DB's might not support a JSON datatype.
@@ -57,7 +57,7 @@ class User {
   }
 
   getName() {
-    return this.name
+    return this.props.name
   }
 }
 ```
@@ -189,5 +189,5 @@ MIT
 [ci-test]: https://github.com/nicholaswmin/generic-repo/actions/workflows/tests.yml
 
 [repository]: https://msdn.microsoft.com/en-us/library/ff649690.aspx
-[knex]: http://knexjs.org/
+[knex]: https://knexjs.org/
 [nicholaswmin-github]: https://github.com/nicholaswmin

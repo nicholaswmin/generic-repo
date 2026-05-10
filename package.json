@@ -1,8 +1,11 @@
 {
   "name": "generic-repo",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Generic repository for objects",
   "main": "index.js",
+  "files": [
+    "index.js"
+  ],
   "directories": {
     "test": "test"
   },
@@ -26,7 +29,7 @@
   },
   "homepage": "https://github.com/nicholaswmin/generic-repo#readme",
   "devDependencies": {
-    "knex": "^3.2.0",
+    "knex": "^3.2.10",
     "sqlite3": "^6.0.1"
   }
 }

@@ -19,7 +19,8 @@ const setup = (knex) => {
       t.string('id_user').primary().notNull()
       t.string('first_name').notNull()
       t.string('last_name').notNull()
-      t.json('children').notNull()
+      t.string('nickname')
+      t.text('children').notNull()
     })
   })
 }

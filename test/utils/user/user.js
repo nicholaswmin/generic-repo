@@ -10,6 +10,7 @@ class User {
       id_user: data.id_user,
       first_name: data.first_name,
       last_name: data.last_name,
+      nickname: data.nickname ?? null,
       children: data.children
         ? typeof data.children === 'string'
           ? JSON.parse(data.children)
@@ -28,6 +29,10 @@ class User {
 
   getChildren() {
     return this.props.children
+  }
+
+  getNickname() {
+    return this.props.nickname
   }
 }
 
