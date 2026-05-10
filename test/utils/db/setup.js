@@ -20,7 +20,7 @@ const setup = (knex) => {
       t.string('first_name').notNull()
       t.string('last_name').notNull()
       t.string('nickname')
-      // Store JSON fixture data as text for consistent SQLite behavior.
+      // Store JSON fixture data as text for consistent SQLite behavior; callers parse it on read.
       t.text('children').notNull()
     })
   })

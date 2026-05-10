@@ -69,6 +69,13 @@ test('GenericRepo with User instances', async (t) => {
 
       t.assert.strictEqual(user.getNickname(), null)
     })
+
+    await t.test('preserves non-null prop values', async (t) => {
+      await genericRepo.upsert(knex, testUsers.maryJane)
+      const user = await genericRepo.get(knex, { id_user: 'rrvkkw' })
+
+      t.assert.strictEqual(user.getNickname(), 'MJ')
+    })
   })
 
   await t.test('getAll()', async (t) => {
